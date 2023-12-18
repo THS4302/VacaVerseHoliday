@@ -1,9 +1,20 @@
-import React, { useState, useEffect, FormEvent } from "react";
-import { useRouter } from "next/router";
+"use client";
+import React, { useState, useEffect, FormEvent, useContext } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import logo from "../../assets/images/logo.png";
-
+import { Context } from "@/context";
 const LoginForm: React.FC = () => {
+  const contextValue = useContext(Context);
+
+  // Check if contextValue is defined
+  if (!contextValue) {
+    // Handle the case when the context value is undefined
+    return <div>Loading...</div>;
+  }
+
+  const { setUsername, setSecret } = contextValue;
+  // const { username, setUsername, secret, setSecret } = useContext(Context);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -24,7 +35,7 @@ const LoginForm: React.FC = () => {
     event.preventDefault();
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("http://localhost:8081/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,11 +52,12 @@ const LoginForm: React.FC = () => {
         localStorage.setItem("userId", data.user.userid);
         localStorage.setItem("authToken", data.user.token);
         localStorage.setItem("roleid", data.user.roleid);
-
+        setUsername(data.user.username);
+        setSecret(data.user.password);
         if (data.user.roleid === 1) {
-          router.push('/');
+          router.push("/");
         } else if (data.user.roleid === 2) {
-          router.push('/admin');
+          router.push("/admin");
         }
       } else {
         alert("Wrong email/password! Please enter again.");
@@ -107,9 +119,7 @@ const LoginForm: React.FC = () => {
           </form>
         </div>
 
-        <Link href="/register">
-          <a className="p">Don’t have an account? Sign up here.</a>
-        </Link>
+        <Link href="/register">Don’t have an account? Sign up here.</Link>
       </div>
     </div>
   );

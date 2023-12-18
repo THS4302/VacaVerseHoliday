@@ -13,7 +13,12 @@ const ProfileMain = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const [activeTab, setActiveTab] = useState("yourPosts");
-  var uid = 11;
+  const userid = localStorage.getItem("userId");
+  let uid: number;
+
+  if (userid !== null) {
+    uid = parseInt(userid, 10);
+  }
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -37,7 +42,7 @@ const ProfileMain = () => {
     };
 
     fetchData();
-  }, [uid, activeTab]);
+  }, [ activeTab]);
 
   return (
     <div className="profile flex">
