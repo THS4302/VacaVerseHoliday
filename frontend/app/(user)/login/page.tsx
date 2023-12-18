@@ -1,5 +1,6 @@
+'use client'
 import React, { useState, useEffect, FormEvent } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import logo from "../../assets/images/logo.png";
 
@@ -108,7 +109,7 @@ const LoginForm: React.FC = () => {
         </div>
 
         <Link href="/register">
-          <a className="p">Don’t have an account? Sign up here.</a>
+         Don’t have an account? Sign up here.
         </Link>
       </div>
     </div>
