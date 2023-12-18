@@ -120,7 +120,7 @@ const LoginForm: React.FC = () => {
         </div>
 
         <Link href="/register">
-          <a className="p">Don’t have an account? Sign up here.</a>
+         Don’t have an account? Sign up here.
         </Link>
       </div>
     </div>
