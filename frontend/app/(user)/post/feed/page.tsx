@@ -13,7 +13,12 @@ export default function Feed() {
   const [cat, setCat] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState("following");
-  const uid = 11;
+  const userid = localStorage.getItem("userId");
+  let uid: number;
+
+  if (userid !== null) {
+    uid = parseInt(userid, 10);
+  }
   const pathname = usePathname();
 
   const getCatTabDetail = async (catID: number) => {
@@ -75,9 +80,8 @@ export default function Feed() {
                 <Tab key={category.cat_id} title={category.cat_name} />
               ))}
           </Tabs>
-      
-            {/* <Image src={SearchIcon} alt="Search Icon" className="w-5 h-5 ml-5" /> */}
-        
+
+          {/* <Image src={SearchIcon} alt="Search Icon" className="w-5 h-5 ml-5" /> */}
         </div>
         <div className="col-12">
           {posts.length > 0 ? (
