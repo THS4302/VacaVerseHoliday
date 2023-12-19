@@ -2,23 +2,22 @@
 import React, { useState, useEffect, Key } from "react";
 import { Tabs, Tab } from "@nextui-org/react";
 import { getAllCat, getPostbyCategory } from "../../../../api/post";
-import { Category, PostByCat } from "@/types/interfaces";
+import { Category, Post } from "@/types/interfaces";
 import { usePathname } from "next/navigation";
 import FeedCard from "../../../../components/Cards/feedCard";
 import SearchIcon from "../../../../_assets/images/search.png";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Feed() {
-  const [posts, setPosts] = useState<PostByCat[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [cat, setCat] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState("following");
   const userid = localStorage.getItem("userId");
-  let uid: number;
-
-  if (userid !== null) {
-    uid = parseInt(userid, 10);
-  }
+  const currentUserID =
+    typeof localStorage !== "undefined" ? localStorage.getItem("userId") : null;
+  const uid = parseInt(currentUserID ?? "0", 10);
   const pathname = usePathname();
 
   const getCatTabDetail = async (catID: number) => {
@@ -87,7 +86,13 @@ export default function Feed() {
           {posts.length > 0 ? (
             <div>
               {posts.map((post) => (
-                <FeedCard key={post.post_id} post={post} />
+                <Link
+                  href={{
+                    pathname: `/post/postDetail/${post.postid}`,
+                  }}
+                >
+                  <FeedCard key={post.post_id} post={post} />
+                </Link>
               ))}
             </div>
           ) : (

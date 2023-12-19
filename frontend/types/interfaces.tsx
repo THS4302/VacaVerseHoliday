@@ -12,6 +12,10 @@ export interface Post {
   description: string;
   images: string[];
   locationid:number;
+  updated_time:Date;
+  created_time:Date;
+  place_name:string;
+  cat_id:number;
 }
 export interface Category {
   cat_id: number;

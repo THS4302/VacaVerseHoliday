@@ -13,12 +13,11 @@ const ProfileMain = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const [activeTab, setActiveTab] = useState("yourPosts");
-  const userid = localStorage.getItem("userId");
-  let uid: number;
 
-  if (userid !== null) {
-    uid = parseInt(userid, 10);
-  }
+  const currentUserID =
+    typeof localStorage !== "undefined" ? localStorage.getItem("userId") : null;
+  const uid = parseInt(currentUserID ?? "0", 10);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const ProfileMain = () => {
     };
 
     fetchData();
-  }, [ activeTab]);
+  }, [activeTab]);
 
   return (
     <div className="profile flex">
@@ -66,9 +65,13 @@ const ProfileMain = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {posts.length > 0 ? (
               posts.map((post) => (
-                <Link href={`/postDetail/${post.postid}`}>
-                  
-                  <PostCard key={post.post_id} post={post} />
+                
+                <Link
+                  href={{
+                    pathname: `/post/postDetail/${post.postid}`,
+                  }}
+                >
+                  <PostCard post={post} />
                 </Link>
               ))
             ) : (
