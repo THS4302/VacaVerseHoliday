@@ -93,6 +93,7 @@ module.exports = (app, route) => {
   //Ren
   //login
   route.post("/api/login", loginUser.loginUserController);
+  route.post("/api/send-reset-code", loginUser.resetPasswordController);
   //route.post("/api/rememberMe", loginUser.userCredentialsController);
 
   //register
