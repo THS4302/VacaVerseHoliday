@@ -39,6 +39,30 @@ const loginUserController = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+const resetPasswordController = async (req, res) => {
+  try {
+    const { email } = req.body.email;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email address is required.' });
+    }
+
+    const resetCode = generateRandomToken(); // Implement your token generation logic
+
+    await transporter.sendMail({
+      from: 'vacaverse@gmail.com',
+      to: email,
+      subject: 'Password Reset Code',
+      text: `Your password reset code is: ${resetCode}`,
+    });
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Error sending reset code email:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+};
+
 
 const userCredentialsController=async(req,res)=>{
   try {
@@ -63,5 +87,5 @@ const userCredentialsController=async(req,res)=>{
 
 
 module.exports = {
-  loginUserController,userCredentialsController
+  loginUserController,userCredentialsController, resetPasswordController
 };

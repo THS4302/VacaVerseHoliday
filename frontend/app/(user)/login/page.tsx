@@ -7,6 +7,7 @@ import { Context } from "@/context";
 import google from "../../../_assets/images/google-logo.png";
 import facebook from "../../../_assets/images/facebook-logo.png";
 import emaillogo from "../../../_assets/images/email-logo.png";
+import ResetCodePopup from "../resetPassword/page";
 
 // Import statements remain the same
 
@@ -16,12 +17,15 @@ const LoginForm: React.FC = () => {
   if (!contextValue) {
     return <div>Loading...</div>;
   }
-
+  const [showResetCodePopup, setShowResetCodePopup] = useState(false);
   const { setUsername, setSecret } = contextValue;
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [generatedToken, setGeneratedToken] = useState('');
+
+  const [userToken, setUserToken] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -34,6 +38,46 @@ const LoginForm: React.FC = () => {
     }
   }, []);
 
+  const generateRandomToken = () => {
+    let token = Math.floor(100000 + Math.random() * 900000);
+    return token;
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      const resetCode = generateRandomToken(); // Generate a reset code
+  
+      // Send reset code to the user's email
+      const response = await fetch(`/api/send-reset-code`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: email, // Replace with the user's email
+          subject: 'Password Reset Code',
+          text: `Your password reset code is: ${resetCode}`,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        // Once the email is sent successfully, show the reset code popup
+        setShowResetCodePopup(true);
+        setGeneratedToken(resetCode.toString()); // Save the reset code for verification
+      } else {
+        console.error('Failed to send reset code:', data.message);
+        alert('Failed to initiate password reset. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during password reset:', error);
+      alert('Failed to initiate password reset. Please try again.');
+    }
+  };
+  
+
+  
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
 
@@ -71,17 +115,57 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="page-container" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f0f0f0' }}>
-      <div className="logo-container" style={{ flex: '1', background: '#001F3F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <img src={logo.src} alt="Vacaverse Logo" style={{ maxWidth: '50%', maxHeight: '50%', borderRadius: '8px' }} />
-      
+    <div
+      className="page-container"
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#f0f0f0",
+      }}
+    >
+      <div
+        className="logo-container"
+        style={{
+          flex: "1",
+          background: "#001F3F",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src={logo.src}
+          alt="Vacaverse Logo"
+          style={{ maxWidth: "50%", maxHeight: "50%", borderRadius: "8px" }}
+        />
       </div>
-      <div className="form-container" style={{ flex: '1', padding: '20px', maxWidth: '400px', background: '#fff', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px', alignItems: "center" }}>
+      <div
+        className="form-container"
+        style={{
+          flex: "1",
+          padding: "20px",
+          maxWidth: "400px",
+          background: "#fff",
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+          borderRadius: "8px",
+          alignItems: "center",
+        }}
+      >
         <div className="frame">
           <div className="div">
             <div className="overlap">
               <div className="overlap-group">
-                <div className="text-wrapper" style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px', textAlign: 'center' }}>LOGIN</div>
+                <div
+                  className="text-wrapper"
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    marginBottom: "20px",
+                    textAlign: "center",
+                  }}
+                >
+                  LOGIN
+                </div>
               </div>
 
               <form onSubmit={handleLogin}>
@@ -112,53 +196,138 @@ const LoginForm: React.FC = () => {
                   <br />
                 </div>
 
-                <button className="overlap-2" name="login" type="submit" style={{ background: '#0070f3', color: '#fff', padding: '10px', borderRadius: '4px', cursor: 'pointer', border: 'none' }}>
+                <button
+                  className="overlap-2"
+                  name="login"
+                  type="submit"
+                  style={{
+                    background: "#0070f3",
+                    color: "#fff",
+                    padding: "10px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    border: "none",
+                  }}
+                >
                   Login
                 </button>
 
-                <label className="overlap-3" style={{ marginTop: '10px', display: 'flex', alignItems: 'center' }}>
+                <label
+                  className="overlap-3"
+                  style={{
+                    marginTop: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={() => setRememberMe(!rememberMe)}
-                    style={{ marginRight: '5px' }}
+                    style={{ marginRight: "5px" }}
                   />
                   Remember Me
                 </label>
               </form>
-
-              <div style={{ marginTop: '10px' }}>
-                <Link legacyBehavior href="/forgot-password">
-                  <a style={{ color: '#0070f3', textDecoration: 'underline' }}>Forgot Password?</a>
-                </Link>
+              <div style={{ marginTop: "10px" }}>
+                <a
+                  onClick={handleForgotPassword}
+                  style={{
+                    cursor: "pointer",
+                    color: "#0070f3",
+                    textDecoration: "underline",
+                  }}
+                >
+                  Forgot Password?
+                </a>
               </div>
 
-              <div style={{ marginTop: '20px' }}>
-                <p style={{ marginBottom: '10px', textAlign: 'center' }}>Login with:</p>
-                <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'inline-block' }}>
-                  <img src={google.src} alt="Google" style={{ width: '40px', height: '40px', marginRight: '10px' }} />
+              <div style={{ marginTop: "20px" }}>
+                <p style={{ marginBottom: "10px", textAlign: "center" }}>
+                  Login with:
+                </p>
+                <button
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "inline-block",
+                  }}
+                >
+                  <img
+                    src={google.src}
+                    alt="Google"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "10px",
+                    }}
+                  />
                 </button>
-                <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'inline-block' }}>
-                  <img src={facebook.src} alt="Facebook" style={{ width: '40px', height: '40px', marginRight: '10px' }} />
+                <button
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "inline-block",
+                  }}
+                >
+                  <img
+                    src={facebook.src}
+                    alt="Facebook"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "10px",
+                    }}
+                  />
                 </button>
-                <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'inline-block' }}>
-                  <img src={emaillogo.src} alt="Email" style={{ width: '40px', height: '40px' }} />
+                <button
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "inline-block",
+                  }}
+                >
+                  <img
+                    src={emaillogo.src}
+                    alt="Email"
+                    style={{ width: "40px", height: "40px" }}
+                  />
                 </button>
               </div>
             </div>
 
             <Link legacyBehavior href="/register">
-              <a style={{ display: 'block', marginTop: '20px', textAlign: 'center', color: '#0070f3', textDecoration: 'underline' }}>Don’t have an account? Sign up here.</a>
+              <a
+                style={{
+                  display: "block",
+                  marginTop: "20px",
+                  textAlign: "center",
+                  color: "#0070f3",
+                  textDecoration: "underline",
+                }}
+              >
+                Don’t have an account? Sign up here.
+              </a>
             </Link>
           </div>
         </div>
       </div>
+      {showResetCodePopup && (
+        <ResetCodePopup
+          onClose={() => setShowResetCodePopup(false)}
+          onVerify={(code) => {
+            // Handle verification logic (e.g., send request to server to verify the code)
+            // If verification is successful, proceed with the password reset process
+            setShowResetCodePopup(false);
+            alert(`Code verified! Proceeding with password reset...`);
+          }}
+        />
+      )}
     </div>
   );
 };
 
 export default LoginForm;
-
-
-
-

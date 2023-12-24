@@ -13,6 +13,7 @@ const Register = () => {
   const [generatedToken, setGeneratedToken] = useState('');
 
   const [userToken, setUserToken] = useState('');
+  
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
