@@ -45,10 +45,15 @@ const LoginForm: React.FC = () => {
 
   const handleForgotPassword = async () => {
     try {
+      if (!email.trim()) {
+        alert('Please enter your email address.');
+        return;
+      }
+     alert('Email before API request:'+ email);
       const resetCode = generateRandomToken(); // Generate a reset code
   
       // Send reset code to the user's email
-      const response = await fetch(`/api/send-reset-code`, {
+      const response = await fetch(`http://localhost:8081/api/send-reset-code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,6 +85,7 @@ const LoginForm: React.FC = () => {
   
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
+   
 
     try {
       const res = await fetch("http://localhost:8081/api/login", {
