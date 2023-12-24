@@ -41,12 +41,16 @@ const loginUserController = async (req, res) => {
 };
 const resetPasswordController = async (req, res) => {
   try {
-    const { email } = req.body.email;
+    const email  = req.body;
+    console.log(email);
 
     if (!email) {
       return res.status(400).json({ success: false, message: 'Email address is required.' });
     }
-
+    const generateRandomToken = () => {
+      let token = Math.floor(100000 + Math.random() * 900000);
+      return token;
+    };
     const resetCode = generateRandomToken(); // Implement your token generation logic
 
     await transporter.sendMail({
