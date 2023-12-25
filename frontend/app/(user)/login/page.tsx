@@ -11,6 +11,7 @@ import ResetCodePopup from "../resetPassword/page";
 
 // Import statements remain the same
 
+
 const LoginForm: React.FC = () => {
   const contextValue = useContext(Context);
 
@@ -49,7 +50,7 @@ const LoginForm: React.FC = () => {
         alert('Please enter your email address.');
         return;
       }
-     alert('Email before API request:'+ email);
+  
       const resetCode = generateRandomToken(); // Generate a reset code
   
       // Send reset code to the user's email
@@ -69,9 +70,11 @@ const LoginForm: React.FC = () => {
   
       if (data.success) {
         // Once the email is sent successfully, show the reset code popup
+        
         setShowResetCodePopup(true);
         setGeneratedToken(resetCode.toString()); // Save the reset code for verification
       } else {
+       
         console.error('Failed to send reset code:', data.message);
         alert('Failed to initiate password reset. Please try again.');
       }
@@ -322,16 +325,19 @@ const LoginForm: React.FC = () => {
         </div>
       </div>
       {showResetCodePopup && (
-        <ResetCodePopup
-          onClose={() => setShowResetCodePopup(false)}
-          onVerify={(code) => {
-            // Handle verification logic (e.g., send request to server to verify the code)
-            // If verification is successful, proceed with the password reset process
-            setShowResetCodePopup(false);
-            alert(`Code verified! Proceeding with password reset...`);
-          }}
-        />
-      )}
+  <ResetCodePopup
+    onClose={() => setShowResetCodePopup(false)}
+    onVerify={(code) => {
+      // Handle verification logic (e.g., send request to server to verify the code)
+      // If verification is successful, proceed with the password reset process
+      
+      setShowResetCodePopup(false);
+      alert(`Code verified! Proceeding with password reset...`);
+    }}
+    generatedToken={generatedToken} // Pass the generatedToken prop
+  />
+)}
+
     </div>
   );
 };

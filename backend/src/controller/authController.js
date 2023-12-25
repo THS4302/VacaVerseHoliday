@@ -1,5 +1,6 @@
 const loginModel = require('../model/authModel');
 const bcrypt=require('bcrypt');
+const {transporter}=require('../config/config');
 
 const express = require('express');
 const router = express.Router();
@@ -39,33 +40,71 @@ const loginUserController = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
-const resetPasswordController = async (req, res) => {
+const resetPasswordController=async(req,res)=>{
   try {
-    const email  = req.body;
-    console.log(email);
-
-    if (!email) {
-      return res.status(400).json({ success: false, message: 'Email address is required.' });
-    }
-    const generateRandomToken = () => {
-      let token = Math.floor(100000 + Math.random() * 900000);
-      return token;
+    // Extract data from the request body
+    const { to, subject, text } = req.body;
+    console.log(req.body);
+    // Define the email options
+    const mailOptions = {
+      from: "VacaVerse Travel Agency <vacaverse.travel@gmail.com>",
+      to,
+      subject,
+      text,
     };
-    const resetCode = generateRandomToken(); // Implement your token generation logic
 
-    await transporter.sendMail({
-      from: 'vacaverse@gmail.com',
-      to: email,
-      subject: 'Password Reset Code',
-      text: `Your password reset code is: ${resetCode}`,
-    });
+    // Send the email using the transporter from the utility file
+    const info = await transporter.sendMail(mailOptions);
 
-    return res.json({ success: true });
+    console.log("Email sent:", info.response);
+
+    res.status(200).json({ success: true, message: "Email sent successfully" });
   } catch (error) {
-    console.error('Error sending reset code email:', error);
-    return res.status(500).json({ success: false, message: 'Internal server error.' });
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-};
+}
+// const resetPasswordController = async (req, res) => {
+//   try{
+
+//     // Extract data from the request body
+//     const { to, subject, text } = req.body;
+//     const user = await loginModel.checkEmailExist(to);
+
+    
+
+//     if (user) {
+//  try{
+//     // Define the email options
+//     const mailOptions = {
+//       from: "VacaVerse Travel Agency <vacaverse.travel@gmail.com>",
+//       to,
+//       subject,
+//       text,
+//     };
+
+//     // Send the email using the transporter from the utility file
+//     const info = await transporter.sendMail(mailOptions);
+
+//     console.log("Email sent:", info.response);
+
+//     res.status(200).json({ success: true, message: "Email sent successfully" });
+//   }
+//  catch (error) {
+//     console.error("Error sending email:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// }
+// if(!user){
+//   res.status(200).json({success:false,message:"User doesn't exist. Try registering."});
+// }
+//   }
+//   catch (error) {
+//     console.error("Error sending email:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 
 
 const userCredentialsController=async(req,res)=>{

@@ -4,25 +4,22 @@ import React, { useState, FormEvent } from 'react';
 interface ResetCodePopupProps {
   onClose: () => void;
   onVerify: (code: string) => void;
+  generatedToken: string; // Add this prop
 }
 
-
-const ResetCodePopup: React.FC<ResetCodePopupProps> = ({ onClose, onVerify }) => {
-  const [resetCode, setResetCode] = useState('');
+const ResetCodePopup: React.FC<ResetCodePopupProps> = ({ onClose, onVerify, generatedToken }) => {
   const [userToken, setUserToken] = useState('');
-  const [generatedToken, setGeneratedToken] = useState('');
-  const handlePopupVerify = () => {
+
+  const handlePopupVerify = (event: FormEvent) => {
+    event.preventDefault();
     // Handle verification logic here
     if (userToken.trim() === generatedToken.toString()) {
-      alert('Code verified! Proceeding with password reset...');
-      // Implement the logic to allow the user to reset the password
-      // You might want to redirect the user to a new password entry page
-      // or show a password reset form here.
+    
+      onVerify(userToken);
     } else {
       alert('Invalid reset code');
     }
   };
-
 
   return (
     <div
@@ -65,11 +62,11 @@ const ResetCodePopup: React.FC<ResetCodePopupProps> = ({ onClose, onVerify }) =>
           <label>
             Enter Reset Code:
             <input
-        type="text"
-        placeholder="Enter Verification Token"
-        value={userToken}
-        onChange={(e) => setUserToken(e.target.value)}
-      />
+              type="text"
+              placeholder="Enter Verification Token"
+              value={userToken}
+              onChange={(e) => setUserToken(e.target.value)}
+            />
           </label>
           <br />
           <br />
