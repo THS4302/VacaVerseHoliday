@@ -8,6 +8,9 @@ import google from "../../../_assets/images/google-logo.png";
 import facebook from "../../../_assets/images/facebook-logo.png";
 import emaillogo from "../../../_assets/images/email-logo.png";
 import ResetCodePopup from "../resetPassword/page";
+import SetNewPasswordPopup from "../newPassword/page";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 // Import statements remain the same
 
@@ -19,10 +22,13 @@ const LoginForm: React.FC = () => {
     return <div>Loading...</div>;
   }
   const [showResetCodePopup, setShowResetCodePopup] = useState(false);
+  const [showSetNewPasswordPopup, setShowSetNewPasswordPopup] = useState(false);
   const { setUsername, setSecret } = contextValue;
+  const [resetPassword, setResetPassword] = useState(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [newPassword,setNewPassword]=useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [generatedToken, setGeneratedToken] = useState('');
 
@@ -85,7 +91,18 @@ const LoginForm: React.FC = () => {
   };
   
 
-  
+  const handlePasswordReset = async () => {
+    try {
+      // You can add logic here to update the user's password with the new one
+      // For demonstration purposes, let's just show an alert
+      alert(`Password reset successful! New password: ${newPassword}`);
+      setResetPassword(false);
+    } catch (error) {
+      console.error("Error during password reset:", error);
+      alert('Failed to reset password. Please try again.');
+    }
+  };
+
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
    
@@ -191,19 +208,36 @@ const LoginForm: React.FC = () => {
                   <br />
                   <br />
                 </div>
-                <div className="overlap-wrapper">
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={password}
-                    className="password-field"
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <br />
-                  <br />
-                </div>
+                <div className="overlap-wrapper" style={{ position: 'relative', marginBottom: '10px' }}>
+  <input
+    type={resetPassword ? 'text' : 'password'}
+    id="password"
+    name="password"
+    value={password}
+    className="password-field"
+    placeholder="Password"
+    onChange={(e) => setPassword(e.target.value)}
+    style={{ paddingRight: '40px' }}
+  />
+  <button
+    type="button"
+    onClick={() => setResetPassword(!resetPassword)}
+    style={{
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      position: 'absolute',
+      right: '10px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+    }}
+  >
+    {resetPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+  </button>
+</div>
+
+
+
 
                 <button
                   className="overlap-2"
@@ -332,11 +366,24 @@ const LoginForm: React.FC = () => {
       // If verification is successful, proceed with the password reset process
       
       setShowResetCodePopup(false);
+      setShowSetNewPasswordPopup(true); 
       alert(`Code verified! Proceeding with password reset...`);
     }}
     generatedToken={generatedToken} // Pass the generatedToken prop
   />
 )}
+    {/* New code for password reset popup */}
+    {showSetNewPasswordPopup && (
+        <SetNewPasswordPopup
+          onClose={() => setShowSetNewPasswordPopup(false)}
+          onSetNewPassword={(newPassword) => {
+            // Handle setting the new password logic here
+            alert(`New Password Set: ${newPassword}`);
+         
+           
+          }}
+        />
+      )}
 
     </div>
   );
