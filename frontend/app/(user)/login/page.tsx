@@ -374,16 +374,16 @@ const LoginForm: React.FC = () => {
 )}
     {/* New code for password reset popup */}
     {showSetNewPasswordPopup && (
-        <SetNewPasswordPopup
-          onClose={() => setShowSetNewPasswordPopup(false)}
-          onSetNewPassword={(newPassword) => {
-            // Handle setting the new password logic here
-            alert(`New Password Set: ${newPassword}`);
-         
-           
-          }}
-        />
-      )}
+  <SetNewPasswordPopup
+    onClose={() => setShowSetNewPasswordPopup(false)}
+    onSetNewPassword={(newPassword) => {
+      // Handle setting the new password logic here
+      alert(`New Password Set: ${newPassword}`);
+    }}
+    email={email} // Pass the email prop
+  />
+)}
+
 
     </div>
   );

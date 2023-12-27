@@ -32,3 +32,12 @@ export interface PostByCat {
   locationid:number;
   cat_id:number;
 }
+
+//ren
+
+export interface Login {
+  username: string;
+  password: string;
+  newpassword: string;
+
+}

@@ -1,29 +1,44 @@
 import React, { useState, FormEvent } from 'react';
+import {changePassword} from "../../../api/login";
 
 interface SetNewPasswordPopupProps {
   onClose: () => void;
   onSetNewPassword: (newPassword: string) => void;
+  email: string;
 }
 
-const SetNewPasswordPopup: React.FC<SetNewPasswordPopupProps> = ({ onClose, onSetNewPassword }) => {
+const SetNewPasswordPopup: React.FC<SetNewPasswordPopupProps> = ({ onClose, onSetNewPassword,email}) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [Error,setError]=useState('');
 
-  const handleSetNewPassword = (event: FormEvent) => {
+  const handleSetNewPassword = async (event: FormEvent) => {
     event.preventDefault();
-    if (newPassword !== confirmPassword) {
-        setError('Passwords do not match. Please re-enter.');
-        return;
-      }
   
-      // Reset error state
-      setError('');
-    // You can add validation logic if needed
-
-    onClose();
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match. Please re-enter.');
+      return;
+    }
+  
+    try {
+      // Call the changePassword function
+      const response = await changePassword(email, newPassword);
+  
+      if (response.success) {
+        // Password change successful
+        alert('Password changed successfully!');
+        onClose();
+      } else {
+        // Password change failed
+        setError('Failed to change password. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      setError('Failed to change password. Please try again.');
+    }
+  
   };
-
+  
   return (
     <div
       style={{
