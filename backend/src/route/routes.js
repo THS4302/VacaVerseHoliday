@@ -95,7 +95,7 @@ module.exports = (app, route) => {
   route.post("/api/login", loginUser.loginUserController);
   route.post("/api/send-reset-code", loginUser.resetPasswordController);
   //route.post("/api/rememberMe", loginUser.userCredentialsController);
-
+  route.put("/api/changePassword",loginUser.changePasswordController);
   //register
   route.post("/api/register", registerUser.registerUserController);
 

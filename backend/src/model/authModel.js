@@ -95,6 +95,37 @@ const checkEmailExist=async(email)=>{
     throw error;
   }
 }
+const changePassword=async(email,newPassword)=>{
+  try{
+    console.log('Before database query');
+    console.log(email);
+    const result = await pool.query(`UPDATE users
+    SET password = $1
+    WHERE email = $2;
+    `, [newPassword,email]);
+    console.log('After database query');
+
+    const user = result.rows[0];
+
+    if (user) {
+      
+
+      console.log("success");
+    
+    
+
+
+      return user;
+    } else {
+      return null;
+    }
+
+  }
+  catch (error) {
+    console.error('Error in checkEmail model:', error);
+    throw error;
+  }
+}
 module.exports = {
-  loginUserModel,getUserCredentials,checkEmailExist
+  loginUserModel,getUserCredentials,checkEmailExist, changePassword
 };

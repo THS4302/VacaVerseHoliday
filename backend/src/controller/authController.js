@@ -105,7 +105,27 @@ const resetPasswordController=async(req,res)=>{
 //   }
 // };
 
+const changePasswordController=async(req,res)=>{
+  try{
+    const{email,newPassword}=req.body;
+    console.log("Received req with",email );
+    const hashedPwd = await bcrypt.hash(newPassword, 10);
+    const changepassword=await loginModel.changePassword(email,hashedPwd);
 
+      if(changepassword){
+        console.log("password changed");
+        return res.status(200).json({success:true,message:'Password changed successfully'});
+
+      }
+      else{
+        return res.status(401).json({success:false,message:'Invalid password'});
+      }
+  }
+  catch(error){
+    console.error('Error in changePasswordController.');
+    return res.status(500).json({success:false, message:'Internal Server Error'});
+  }
+}
 
 const userCredentialsController=async(req,res)=>{
   try {
@@ -130,5 +150,5 @@ const userCredentialsController=async(req,res)=>{
 
 
 module.exports = {
-  loginUserController,userCredentialsController, resetPasswordController
+  loginUserController,userCredentialsController, resetPasswordController, changePasswordController
 };
