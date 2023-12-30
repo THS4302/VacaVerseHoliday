@@ -11,6 +11,7 @@ import ResetCodePopup from "../resetPassword/page";
 import SetNewPasswordPopup from "../newPassword/page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import GoogleSignIn from "@/components/SignIn/GoogleSignIn";
 
 // Import statements remain the same
 
@@ -128,7 +129,7 @@ const LoginForm: React.FC = () => {
         setSecret(data.user.password);
 
         if (data.user.roleid === 1) {
-          router.push("/");
+          router.push("/home");
         } else if (data.user.roleid === 2) {
           router.push("/admin");
         }
@@ -289,24 +290,8 @@ const LoginForm: React.FC = () => {
                 <p style={{ marginBottom: "10px", textAlign: "center" }}>
                   Login with:
                 </p>
-                <button
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "inline-block",
-                  }}
-                >
-                  <img
-                    src={google.src}
-                    alt="Google"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      marginRight: "10px",
-                    }}
-                  />
-                </button>
+                <GoogleSignIn/>
+               
                 <button
                   style={{
                     background: "none",
