@@ -129,7 +129,7 @@ const LoginForm: React.FC = () => {
         setSecret(data.user.password);
 
         if (data.user.roleid === 1) {
-          router.push("/home");
+          router.push("/homepage");
         } else if (data.user.roleid === 2) {
           router.push("/admin");
         }
