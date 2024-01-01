@@ -41,3 +41,13 @@ export interface Login {
   newpassword: string;
 
 }
+
+export interface Place{
+  place_image:string;
+  placeid:number;
+  place_name:string;
+  cat_name:string;
+  description:string;
+  rating:number;
+}
+
