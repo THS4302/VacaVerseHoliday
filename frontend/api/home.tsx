@@ -34,3 +34,21 @@ export async function getMostBooked(){
       throw error;
     }
 }
+
+export async function getRecommended(userId: number){
+    try{
+ 
+    const recommendedAPI = `${baseURL}/api/getRecommended/${userId}`;
+     const response = await fetch(recommendedAPI);
+ 
+     if (!response.ok) {
+         throw new Error(`HTTP error! Status: ${response.status}`);
+       }
+   
+       const responseData = await response.json();
+       return responseData;
+     } catch (error) {
+       console.error('Error fetching user data:', error);
+       throw error;
+     }
+ }

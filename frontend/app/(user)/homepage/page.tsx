@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import Link from "next/link";
 import {User,Place,Post} from "../../../types/interfaces";
-import { getMostBooked, getUserData } from "@/api/home";
+import { getMostBooked, getUserData,getRecommended } from "@/api/home";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import PostCard from "@/components/Cards/postCard";
@@ -73,11 +73,16 @@ const HomePage = () => {
 
     const fetchRecommended = async () => {
       try {
-        const userId = localStorage.getItem("userId");
-        const recommendedResponse = await fetch(
-          `/api/getRecommended/${userId}`
-        );
-        const recommendedData = await recommendedResponse.json();
+        const userIdString = localStorage.getItem("userId");
+       
+        const userId = userIdString !== null ? parseInt(userIdString, 10) : null;
+        // Fetch user data
+        if (userId !== null) {
+        const recommendedData = await getRecommended(userId);
+     
+        
+       
+    
 
         if (Array.isArray(recommendedData.recommendedPlaces)) {
           setRecommended(recommendedData.recommendedPlaces);
@@ -87,6 +92,8 @@ const HomePage = () => {
             recommendedData.recommendedPlaces
           );
         }
+      }
+
       } catch (error) {
         console.error("Error fetching most recommended data:", error);
       }
@@ -94,7 +101,7 @@ const HomePage = () => {
 
     const fetchMostPopular = async () => {
       try {
-        const mostPopularResponse = await fetch("/api/mostSavedPosts");
+        const mostPopularResponse = await fetch("http:/localhost:8081/api/mostSavedPosts");
         const mostPopularData = await mostPopularResponse.json();
 
         if (Array.isArray(mostPopularData.mostSavedPosts)) {
