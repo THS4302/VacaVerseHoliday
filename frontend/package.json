@@ -17,6 +17,7 @@
     "@types/gapi.auth2": "^0.0.60",
     "axios": "^1.6.3",
     "framer-motion": "^10.16.16",
+    "haversine-distance": "^1.2.1",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",
     "next-themes": "^0.2.1",
