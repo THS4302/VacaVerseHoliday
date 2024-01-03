@@ -17,9 +17,15 @@ const statistics = require("../controller/statisticsController");
 const { stat } = require("fs");
 const email = require("../controller/emailController");
 const { updateBookingStatus } = require("../model/bookingsModel");
-
+const chat = require("../controller/chatController");
 module.exports = (app, route) => {
   //Tasmiyah
+  //chat
+  route.post("/api/createConvo", chat.createNewConvo);
+  route.get("/api/getConvoByUser/:uid", chat.getConvoByUser);
+  route.post("/api/newMessage", chat.addNewMessage);
+  route.get("/api/getMessages/:convoID", chat.getMsgByConvo);
+
   //profile
   route.get("/api/allPosts", profile.getAllPosts);
   route.post(
@@ -47,7 +53,7 @@ module.exports = (app, route) => {
     "/api/similarPlacePosts/:placeID/:userID/:postID",
     profile.similarPosts
   );
-  route.get("/api/postByCat/:uid/:catID",profile.getPostByCat)
+  route.get("/api/postByCat/:uid/:catID", profile.getPostByCat);
   //bookings
   route.get("/api/getMyUpComingBookings/:uid", booking.UpcomingBookingsByID);
   route.get("/api/getMyPastBookings/:uid", booking.PastBookingsByID);

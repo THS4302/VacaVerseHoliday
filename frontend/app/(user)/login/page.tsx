@@ -3,17 +3,8 @@ import React, { useState, useEffect, FormEvent, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import logo from "../../assets/images/logo.png";
-import { Context } from "@/context";
+
 const LoginForm: React.FC = () => {
-  const contextValue = useContext(Context);
-
-  // Check if contextValue is defined
-  if (!contextValue) {
-    // Handle the case when the context value is undefined
-    return <div>Loading...</div>;
-  }
-
-  const { setUsername, setSecret } = contextValue;
   // const { username, setUsername, secret, setSecret } = useContext(Context);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
@@ -49,11 +40,11 @@ const LoginForm: React.FC = () => {
         alert("Login Success!");
 
         // Store user ID in localStorage
+        localStorage.setItem("user", data.user);
         localStorage.setItem("userId", data.user.userid);
         localStorage.setItem("authToken", data.user.token);
         localStorage.setItem("roleid", data.user.roleid);
-        setUsername(data.user.username);
-        setSecret(data.user.password);
+
         if (data.user.roleid === 1) {
           router.push("/");
         } else if (data.user.roleid === 2) {
@@ -119,9 +110,7 @@ const LoginForm: React.FC = () => {
           </form>
         </div>
 
-        <Link href="/register">
-         Don’t have an account? Sign up here.
-        </Link>
+        <Link href="/register">Don’t have an account? Sign up here.</Link>
       </div>
     </div>
   );

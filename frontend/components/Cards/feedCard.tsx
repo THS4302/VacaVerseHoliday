@@ -6,7 +6,7 @@ import { Post, User } from "../../types/interfaces";
 import { getUser } from "@/api/post";
 import defaultPic from "../../_assets/images/profilePic.png";
 
-const PostCard = ({ post }: { post: Post }) => {
+const FeedCard = ({ post }: { post: Post }) => {
   const { title, images, description, userid } = post;
   const [users, setUsers] = useState<User[]>([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -15,16 +15,23 @@ const PostCard = ({ post }: { post: Post }) => {
     const fetchData = async () => {
       try {
         // Fetch user data
+        console.log("userid", userid);
         const getUserInfo = await getUser(userid);
-        const userData = getUserInfo.users || [];
+        const userData = getUserInfo.users;
+        console.log("API Response:", getUserInfo, userData);
         setUsers(userData);
       } catch (error) {
         console.error("Error fetching data:", error);
+        throw error;
       }
     };
 
     fetchData();
   }, [userid]);
+
+  useEffect(() => {
+    console.log("users in feed ", users);
+  }, [users]);
 
   const maxWords = 30;
 
@@ -57,7 +64,7 @@ const PostCard = ({ post }: { post: Post }) => {
             ))}
           </div>
           <hr className="border-t border-gray-300 mb-2" />
-          {users.map((user, index) => (
+          {/* {users.map((user, index) => (
             <div key={index} className="flex mb-4">
               {user && (
                 <Image
@@ -73,7 +80,7 @@ const PostCard = ({ post }: { post: Post }) => {
                 <p className="font-bold mt-2">{user.username}</p>
               </div>
             </div>
-          ))}
+          ))} */}
 
           {/* Description section */}
           <div>
@@ -93,4 +100,4 @@ const PostCard = ({ post }: { post: Post }) => {
   );
 };
 
-export default PostCard;
+export default FeedCard;

@@ -15,8 +15,7 @@ export default function Feed() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState("following");
   const userid = localStorage.getItem("userId");
-  const currentUserID =
-    typeof localStorage !== "undefined" ? localStorage.getItem("userId") : null;
+  const currentUserID = localStorage.getItem("userId");
   const uid = parseInt(currentUserID ?? "0", 10);
   const pathname = usePathname();
 
@@ -91,7 +90,7 @@ export default function Feed() {
                     pathname: `/post/postDetail/${post.postid}`,
                   }}
                 >
-                  <FeedCard key={post.post_id} post={post} />
+                  <FeedCard key={post.postid} post={post} />
                 </Link>
               ))}
             </div>

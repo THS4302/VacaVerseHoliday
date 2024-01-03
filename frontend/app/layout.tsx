@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Link from "next/link";
-import { ContextProvider } from "@/context";
-
+import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
+import { AuthProvider } from "../context/authContext";
 
 export const metadata: Metadata = {
   title: "VacaVerse",
@@ -20,11 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ContextProvider>
+        <AuthProvider>
           <Providers>
             <main> {children}</main>
           </Providers>
-        </ContextProvider>
+        </AuthProvider>
       </body>
     </html>
   );

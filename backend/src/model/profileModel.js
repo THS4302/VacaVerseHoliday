@@ -229,16 +229,24 @@ module.exports.getPostByUser = async (userId) => {
 };
 
 module.exports.getUserByID = async (userid) => {
-  console.log("in getUserByIDmodel ");
+  console.log("in getUserByID model ");
   try {
     sql = "SELECT * FROM users where userid=$1";
     const user = await pool.query(sql, [userid]);
-    console.log(user.rows);
-    return user.rows;
+
+    if (user.rows.length === 0) {
+      // No user found for the given userid
+      return null;
+    }
+
+    console.log(user.rows[0]);
+    return user.rows[0];
   } catch (error) {
     console.log("error" + error);
+    throw error;// Rethrow the error to be caught in the controller
   }
 };
+
 module.exports.getPostByID = async (postID) => {
   console.log("in getPostByID model ");
   try {

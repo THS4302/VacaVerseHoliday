@@ -69,15 +69,16 @@ export async function getPostbyCategory(userID: number, catID: number) {
 }
 export async function getUser(userID: number) {
   try {
-    console.log("in postByCat api");
-    const postCat = `${baseURL}/api/user/${userID}`;
-    const response = await fetch(postCat);
+    // console.log("in postByCat api");
+    const user = `${baseURL}/api/user/${userID}`;
+    const response = await fetch(user);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const responseData = await response.json();
+    // console.log(responseData.users)
     return responseData;
   } catch (error) {
     console.error("Error fetching posts by category:", error);
