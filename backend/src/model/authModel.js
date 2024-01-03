@@ -68,6 +68,64 @@ const getUserCredentials=async(email)=>{
     throw error;
   }
 };
+
+const checkEmailExist=async(email)=>{
+  try {
+    console.log('Before database query');
+    console.log(email);
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    console.log('After database query');
+
+    const user = result.rows[0];
+
+    if (user) {
+      
+
+      console.log("success");
+    
+    
+
+
+      return user;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error in checkEmail model:', error);
+    throw error;
+  }
+}
+const changePassword=async(email,newPassword)=>{
+  try{
+    console.log('Before database query');
+    console.log(email);
+    const result = await pool.query(`UPDATE users
+    SET password = $1
+    WHERE email = $2;
+    `, [newPassword,email]);
+    console.log('After database query');
+
+    const user = result.rows[0];
+
+    if (user) {
+      
+
+      console.log("success");
+    
+    
+
+
+      return user;
+    } else {
+      return null;
+    }
+
+  }
+  catch (error) {
+    console.error('Error in checkEmail model:', error);
+    throw error;
+  }
+}
 module.exports = {
-  loginUserModel,getUserCredentials
+  loginUserModel,getUserCredentials,checkEmailExist, changePassword
 };
