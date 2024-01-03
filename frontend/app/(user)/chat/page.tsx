@@ -10,7 +10,8 @@ import { useAuth } from "@/context/authContext";
 import { Conversation, Message, User } from "@/types/interfaces";
 import { getUser } from "@/api/post";
 import { io, Socket } from "socket.io-client";
-
+// import "eventsource-polyfill";
+import dynamic from "next/dynamic";
 interface ArrivalMsg {
   sender: number;
   text: string;
@@ -30,38 +31,53 @@ export default function Chat() {
     typeof localStorage !== "undefined" ? localStorage.getItem("userId") : null;
   const uid = parseInt(currentUserID ?? "0", 10);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-
+  const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
   useEffect(() => {
-    socket.current = io("ws://localhost:8081");
+    socket.current = io("ws://localhost:8081", {
+      withCredentials: true,
+      transports: ["websocket", "htmlfile", "xhr-multipart", "xhr-polling"],
+    });
     socket.current.on("connect", () => {
-      console.log("Socket connected!");
+      console.log("Socket connected from frontend!");
     });
     socket.current.on("getMessage", (data) => {
-      alert("Received message data:" + data);
+      alert(" message data:" + data.text);
+      console.log("Message to log " + data.text);
+
       setArrivalMessage({
         message_id: data.message_id,
         convo_id: data.convo_id,
         sender: data.senderId,
         text: data.text,
         created_at: new Date(),
+        receiver: data.receiverId,
       });
     });
     socket.current.on("disconnect", () => {
       console.log("Socket disconnected!");
     });
-  }, []);
-  useEffect(() => {}, []);
 
+    return () => {
+      // Disconnect the socket when the component unmounts
+      socket.current?.disconnect();
+    };
+  }, [uid]);
+  // useEffect(() => {}, [arrivalMessage, currentChat]);
   useEffect(() => {
-    arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
+    if (
+      arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender)
+    ) {
+      console.log("working");
       setMessages((prevMessages) => [...prevMessages, arrivalMessage]);
+    }
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
     socket.current?.emit("addUser", uid);
     socket.current?.on("getUsers", (users) => {
-      console.log("Received users from getUsers event:", users);
+      // console.log("Received users from getUsers event:", users);
+      setOnlineUsers(users);
     });
   }, [user]);
 
@@ -86,7 +102,7 @@ export default function Chat() {
 
     fetchUser();
     getConvo();
-  }, [uid]);
+  }, [uid, currentChat]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -104,7 +120,7 @@ export default function Chat() {
     };
 
     getMessages();
-  }, [currentChat]);
+  }, [currentChat, arrivalMessage]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -115,7 +131,6 @@ export default function Chat() {
         text: newMessage,
       };
 
-      console.log("frontend send msg");
       try {
         const newData = await createMessage(message);
         setMessages([...messages, newData.message]);
@@ -123,6 +138,15 @@ export default function Chat() {
         const receiverId = currentChat?.members.find(
           (member) => member !== uid
         );
+        // socket.current?.emit("sendMessage", {
+        //   message_id: newData.message.message_id,
+        //   convo_id: newData.message.convo_id,
+        //   senderId: uid,
+        //   receiverId: uid,
+        //   text: newMessage,
+        // });
+
+        // Emit to the receiver
         socket.current?.emit("sendMessage", {
           message_id: newData.message.message_id,
           convo_id: newData.message.convo_id,
@@ -130,6 +154,7 @@ export default function Chat() {
           receiverId: receiverId,
           text: newMessage,
         });
+
         setNewMessages("");
       } catch (error) {
         console.error("Error sending message:", error);
@@ -207,9 +232,9 @@ export default function Chat() {
 
       <div className="chatOnline w-1/4 ">
         <div className="chatOnlineWrapper h-full p-10">
-          <ChatOnline />
-          <ChatOnline />
-          <ChatOnline />
+          <ChatOnline
+         
+          />
         </div>
       </div>
     </div>

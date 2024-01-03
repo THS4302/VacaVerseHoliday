@@ -34,6 +34,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
+  transports: ["websocket", "polling"],
 });
 
 var users = [];
@@ -101,7 +102,7 @@ io.on("connection", (socket) => {
           senderId,
           text,
         });
-        
+
         console.log(senderId, text);
       } else {
         console.log("User not found or missing socketId.");

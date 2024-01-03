@@ -32,7 +32,7 @@ export interface PostByCat {
   userid: number;
   description: string;
   images: string[];
-<<<<<<< HEAD
+
   locationid: number;
   cat_id: number;
 }
@@ -48,16 +48,13 @@ export interface Message {
   sender: number;
   text: string;
   created_at: Date;
+  receiver: number 
 }
 
 export interface sendMsg {
   convo_id: number;
   sender: number;
   text: string;
-}
-=======
-  locationid:number;
-  cat_id:number;
 }
 
 //ren
@@ -66,16 +63,13 @@ export interface Login {
   username: string;
   password: string;
   newpassword: string;
-
 }
 
-export interface Place{
-  place_image:string;
-  placeid:number;
-  place_name:string;
-  cat_name:string;
-  description:string;
-  rating:number;
+export interface Place {
+  place_image: string;
+  placeid: number;
+  place_name: string;
+  cat_name: string;
+  description: string;
+  rating: number;
 }
-
->>>>>>> 7b2feae6e7d46bdf1520bbfb2c87cfe1ad224425
