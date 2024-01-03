@@ -3,37 +3,36 @@ import React, { useState, useEffect, FormEvent, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import logo from "../../../_assets/images/logo.png";
-import { Context } from "@/context";
+// import { Context } from "@/context";
 import google from "../../../_assets/images/google-logo.png";
 import facebook from "../../../_assets/images/facebook-logo.png";
 import emaillogo from "../../../_assets/images/email-logo.png";
 import ResetCodePopup from "../resetPassword/page";
 import SetNewPasswordPopup from "../newPassword/page";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import GoogleSignIn from "@/components/SignIn/GoogleSignIn";
 
 // Import statements remain the same
 
-
 const LoginForm: React.FC = () => {
-  const contextValue = useContext(Context);
+  // const contextValue = useContext(Context);
 
-  if (!contextValue) {
-    return <div>Loading...</div>;
-  }
+  // if (!contextValue) {
+  //   return <div>Loading...</div>;
+  // }
   const [showResetCodePopup, setShowResetCodePopup] = useState(false);
   const [showSetNewPasswordPopup, setShowSetNewPasswordPopup] = useState(false);
-  const { setUsername, setSecret } = contextValue;
+  // const { setUsername, setSecret } = contextValue;
   const [resetPassword, setResetPassword] = useState(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [newPassword,setNewPassword]=useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
-  const [generatedToken, setGeneratedToken] = useState('');
+  const [generatedToken, setGeneratedToken] = useState("");
 
-  const [userToken, setUserToken] = useState('');
+  const [userToken, setUserToken] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -54,59 +53,59 @@ const LoginForm: React.FC = () => {
   const handleForgotPassword = async () => {
     try {
       if (!email.trim()) {
-        alert('Please enter your email address.');
+        alert("Please enter your email address.");
         return;
       }
-  
+
       const resetCode = generateRandomToken(); // Generate a reset code
-  
+
       // Send reset code to the user's email
-      const response = await fetch(http://localhost:8081/api/send-reset-code, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: email, // Replace with the user's email
-          subject: 'Password Reset Code',
-          text: Your password reset code is: ${resetCode},
-        }),
-      });
-  
+      const response = await fetch(
+        `http://localhost:8081/api/send-reset-code`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: email, // Replace with the user's email
+            subject: "Password Reset Code",
+            text: `Your password reset code is: ${resetCode}`,
+          }),
+        }
+      );
+
       const data = await response.json();
-  
+
       if (data.success) {
         // Once the email is sent successfully, show the reset code popup
-        
+
         setShowResetCodePopup(true);
         setGeneratedToken(resetCode.toString()); // Save the reset code for verification
       } else {
-       
-        console.error('Failed to send reset code:', data.message);
-        alert('Failed to initiate password reset. Please try again.');
+        console.error("Failed to send reset code:", data.message);
+        alert("Failed to initiate password reset. Please try again.");
       }
     } catch (error) {
-      console.error('Error during password reset:', error);
-      alert('Failed to initiate password reset. Please try again.');
+      console.error("Error during password reset:", error);
+      alert("Failed to initiate password reset. Please try again.");
     }
   };
-  
 
   const handlePasswordReset = async () => {
     try {
       // You can add logic here to update the user's password with the new one
       // For demonstration purposes, let's just show an alert
-      alert(Password reset successful! New password: ${newPassword});
+      alert(`Password reset successful! New password: ${newPassword}`);
       setResetPassword(false);
     } catch (error) {
       console.error("Error during password reset:", error);
-      alert('Failed to reset password. Please try again.');
+      alert("Failed to reset password. Please try again.");
     }
   };
 
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
-   
 
     try {
       const res = await fetch("http://localhost:8081/api/login", {
@@ -209,36 +208,40 @@ const LoginForm: React.FC = () => {
                   <br />
                   <br />
                 </div>
-                <div className="overlap-wrapper" style={{ position: 'relative', marginBottom: '10px' }}>
-  <input
-    type={resetPassword ? 'text' : 'password'}
-    id="password"
-    name="password"
-    value={password}
-    className="password-field"
-    placeholder="Password"
-    onChange={(e) => setPassword(e.target.value)}
-    style={{ paddingRight: '40px' }}
-  />
-  <button
-    type="button"
-    onClick={() => setResetPassword(!resetPassword)}
-    style={{
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      position: 'absolute',
-      right: '10px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-    }}
-  >
-    {resetPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-  </button>
-</div>
-
-
-
+                <div
+                  className="overlap-wrapper"
+                  style={{ position: "relative", marginBottom: "10px" }}
+                >
+                  <input
+                    type={resetPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={password}
+                    className="password-field"
+                    placeholder="Password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{ paddingRight: "40px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setResetPassword(!resetPassword)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    }}
+                  >
+                    {resetPassword ? (
+                      <FontAwesomeIcon icon={faEye} />
+                    ) : (
+                      <FontAwesomeIcon icon={faEyeSlash} />
+                    )}
+                  </button>
+                </div>
 
                 <button
                   className="overlap-2"
@@ -290,8 +293,8 @@ const LoginForm: React.FC = () => {
                 <p style={{ marginBottom: "10px", textAlign: "center" }}>
                   Login with:
                 </p>
-                <GoogleSignIn/>
-               
+                <GoogleSignIn />
+
                 <button
                   style={{
                     background: "none",
@@ -344,34 +347,32 @@ const LoginForm: React.FC = () => {
         </div>
       </div>
       {showResetCodePopup && (
-  <ResetCodePopup
-    onClose={() => setShowResetCodePopup(false)}
-    onVerify={(code) => {
-      // Handle verification logic (e.g., send request to server to verify the code)
-      // If verification is successful, proceed with the password reset process
-      
-      setShowResetCodePopup(false);
-      setShowSetNewPasswordPopup(true); 
-      alert(Code verified! Proceeding with password reset...);
-    }}
-    generatedToken={generatedToken} // Pass the generatedToken prop
-  />
-)}
-    {/* New code for password reset popup */}
-    {showSetNewPasswordPopup && (
-  <SetNewPasswordPopup
-    onClose={() => setShowSetNewPasswordPopup(false)}
-    onSetNewPassword={(newPassword) => {
-      // Handle setting the new password logic here
-      alert(New Password Set: ${newPassword});
-    }}
-    email={email} // Pass the email prop
-  />
-)}
+        <ResetCodePopup
+          onClose={() => setShowResetCodePopup(false)}
+          onVerify={(code) => {
+            // Handle verification logic (e.g., send request to server to verify the code)
+            // If verification is successful, proceed with the password reset process
 
-
+            setShowResetCodePopup(false);
+            setShowSetNewPasswordPopup(true);
+            alert(`Code verified! Proceeding with password reset...`);
+          }}
+          generatedToken={generatedToken} // Pass the generatedToken prop
+        />
+      )}
+      {/* New code for password reset popup */}
+      {showSetNewPasswordPopup && (
+        <SetNewPasswordPopup
+          onClose={() => setShowSetNewPasswordPopup(false)}
+          onSetNewPassword={(newPassword) => {
+            // Handle setting the new password logic here
+            alert(`New Password Set: ${newPassword}`);
+          }}
+          email={email} // Pass the email prop
+        />
+      )}
     </div>
   );
 };
 
-export default LoginForm;
+export default LoginForm;
